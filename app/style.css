@@ -58,27 +58,17 @@ main {
     border-bottom: 2px solid var(--border-color);
 }
 
-#group-controls-container {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-end;
-    /* PCでは右寄せ */
-    align-items: center;
-    gap: 0;
-    margin-bottom: 20px;
-}
-
 .group-selector {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    justify-content: flex-start;
-    /* 起点（右）から並べる */
+    justify-content: center;
+    margin-bottom: 20px;
     direction: rtl;
-    /* ボタンの並びは右から左 */
+    /* 右から左への流れを作る */
 }
 
-/* 子要素のテキスト方向を戻す */
+/* 子要素（テキスト等）の方向を戻す */
 .group-item {
     direction: ltr;
     display: flex;
@@ -113,7 +103,13 @@ main {
     border-left: 2px solid #ddd;
     padding-left: 20px;
     white-space: nowrap;
-    /* 合計ラベルの改行防止 */
+}
+
+/* PC版: 合計を右端（フローの先頭）に持ってくる */
+@media (min-width: 769px) {
+    .total-bh {
+        order: -1;
+    }
 }
 
 .total-label {
@@ -478,17 +474,9 @@ main {
         /* 確実に最前面へ */
     }
 
-    #group-controls-container {
-        flex-direction: column;
-        align-items: flex-end;
-        /* スマホでは下段に追いやって右寄せ */
-        gap: 10px;
-    }
-
     .group-selector {
         gap: 5px;
-        justify-content: flex-start;
-        width: 100%;
+        justify-content: center;
     }
 
     .group-btn {
@@ -503,12 +491,15 @@ main {
     }
 
     .total-bh {
-        border-right: none;
+        border-right: 2px solid #ddd;
+        /* 折り返した行で、左にあるボタンとの境界を作る */
         border-left: none;
-        /* スマホでは区切り線不要 */
         margin-left: 0;
+        margin-right: 5px;
         padding-left: 0;
-        margin-top: 5px;
+        padding-right: 10px;
+        order: 99;
+        /* スマホではフローの最後（左下）に配置 */
     }
 
     .seat-grid {
