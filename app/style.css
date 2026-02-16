@@ -64,6 +64,8 @@ main {
     gap: 10px;
     justify-content: center;
     margin-bottom: 20px;
+    flex-direction: row-reverse;
+    /* 右から左へ */
 }
 
 .group-item {
@@ -95,9 +97,14 @@ main {
 }
 
 .total-bh {
-    margin-left: 20px;
+    margin-right: 10px;
+    /* Aボタンとの間にマージン */
+    margin-left: 0;
     border-left: 2px solid #ddd;
+    /* 左側に区切り線 */
+    border-right: none;
     padding-left: 20px;
+    padding-right: 0;
 }
 
 .total-label {
@@ -464,6 +471,9 @@ main {
 
     .group-selector {
         gap: 5px;
+        flex-direction: row-reverse;
+        justify-content: flex-start;
+        /* 右寄せ（RTLの起点） */
     }
 
     .group-btn {
@@ -478,8 +488,11 @@ main {
     }
 
     .total-bh {
-        margin-left: 10px;
+        margin-left: 5px;
         padding-left: 10px;
+        border-left: 2px solid #ddd;
+        border-right: none;
+        margin-right: 0;
     }
 
     .seat-grid {
