@@ -1,0 +1,516 @@
+:root {
+    --bg-color: #f8f9fa;
+    --card-bg: #ffffff;
+    --text-color: #333;
+    --border-color: #ddd;
+
+    /* グループ色 */
+    --color-a: #888888;
+    /* 中央: グレー */
+    --color-b: #f1c40f;
+    /* Sun spire: 黄 */
+    --color-c: #50c878;
+    /* ボアソルチ: エメラルドグリーン */
+    --color-d: #3498db;
+    /* コリドラス: 青 */
+    --color-e: #ffb6c1;
+    /* ショコラ: ピンク */
+    --color-f: #adff2f;
+    /* 太陽軒・TS1: 黄緑 */
+    --color-g: #ff8c00;
+    /* FORZA: オレンジ */
+    --color-h: #228b22;
+    /* X: 緑 */
+    --color-i: #e74c3c;
+    /* KSWフォース: 赤 */
+    --color-j: #444444;
+    /* お立ち台: 濃いグレー */
+    --color-none: #ecf0f1;
+    /* 未選択 */
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* コントロールエリア */
+#controls {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.group-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.group-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.group-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s, opacity 0.2s;
+    background-color: var(--color-none);
+    min-width: 100px;
+}
+
+.count {
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    background: #eee;
+    padding: 2px 10px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+}
+
+.total-bh {
+    margin-left: 20px;
+    border-left: 2px solid #ddd;
+    padding-left: 20px;
+}
+
+.total-label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #777;
+    margin-bottom: 5px;
+}
+
+#count-total-BH {
+    background-color: #333;
+    color: #fff;
+    border-color: #333;
+}
+
+.group-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+.group-btn.active {
+    outline: 3px solid #333;
+    transform: scale(1.05);
+}
+
+/* ボタン各色 */
+.group-btn[data-group="A"] {
+    background-color: var(--color-a);
+    color: white;
+}
+
+.group-btn[data-group="B"] {
+    background-color: var(--color-b);
+    color: #333;
+}
+
+.group-btn[data-group="C"] {
+    background-color: var(--color-c);
+    color: white;
+}
+
+.group-btn[data-group="D"] {
+    background-color: var(--color-d);
+    color: white;
+}
+
+.group-btn[data-group="E"] {
+    background-color: var(--color-e);
+    color: #333;
+}
+
+.group-btn[data-group="F"] {
+    background-color: var(--color-f);
+    color: #333;
+}
+
+.group-btn[data-group="G"] {
+    background-color: var(--color-g);
+    color: #333;
+}
+
+.group-btn[data-group="H"] {
+    background-color: var(--color-h);
+    color: white;
+}
+
+.group-btn[data-group="I"] {
+    background-color: var(--color-i);
+    color: white;
+}
+
+#special-input-a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 15px;
+    background: #f0f0f0;
+    border-radius: 8px;
+}
+
+#special-input-a.hidden {
+    display: none;
+}
+
+#status-message {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+/* 座席グリッド */
+#seat-map-container {
+    overflow-x: auto;
+    margin-bottom: 40px;
+    padding: 10px;
+}
+
+.seat-grid {
+    display: grid;
+    /* 10行 (ラベル1 + 座席9) × 46列 (ラベル1 + 22列 + 通路1列 + 22列) */
+    grid-template-columns: 30px repeat(22, 20px) 20px repeat(22, 20px);
+    grid-template-rows: 25px repeat(9, 20px);
+    gap: 4px;
+    justify-content: center;
+    min-width: 1150px;
+    touch-action: none;
+    /* スマホでのドラッグ中のスクロールを防止 */
+    user-select: none;
+    /* ドラッグ中のテキスト選択防止 */
+}
+
+/* ラベルのスタイル */
+.grid-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #777;
+    font-weight: bold;
+}
+
+.col-label {
+    padding-bottom: 5px;
+}
+
+.row-label {
+    padding-right: 5px;
+}
+
+/* 22列目と23列目の間の通路（Block 2 の最初の要素を調整） */
+/* 22列目と23列目の間の通路（Block 2 の開始要素を 25カラム目から開始させる） */
+/* 1行につき 45要素（ラベル含め）あるため、24番目の要素が Block 2 の開始 */
+/* ヘッダー行および各座席行の 24番目の要素に適用 */
+.seat-grid>div:nth-child(45n+24) {
+    grid-column-start: 25;
+}
+
+.seat {
+    width: 20px;
+    height: 20px;
+    background-color: var(--color-none);
+    border: 1px solid #bdc3c7;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.seat:hover {
+    filter: brightness(0.9);
+}
+
+/* 各グループの色クラス */
+.seat.group-A {
+    background-color: var(--color-a);
+}
+
+.seat.group-B {
+    background-color: var(--color-b);
+}
+
+.seat.group-C {
+    background-color: var(--color-c);
+}
+
+.seat.group-D {
+    background-color: var(--color-d);
+}
+
+.seat.group-E {
+    background-color: var(--color-e);
+}
+
+.seat.group-F {
+    background-color: var(--color-f);
+}
+
+.seat.group-G {
+    background-color: var(--color-g);
+}
+
+.seat.group-H {
+    background-color: var(--color-h);
+}
+
+.seat.group-I {
+    background-color: var(--color-i);
+}
+
+.seat.group-J {
+    background-color: var(--color-j);
+}
+
+/* 集計テーブル */
+#summary-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#summary-table th,
+#summary-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#summary-table th {
+    background-color: #f2f2f2;
+}
+
+/* 同期状態の表示 */
+#status-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    position: relative;
+    padding: 10px 240px 10px 10px;
+    /* ボタン分の余白を右側に確保 (お立ち台+ロック+クリア) */
+}
+
+#sync-status {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    transition: all 0.3s;
+    display: inline-block;
+}
+
+#podium-btn {
+    position: absolute;
+    right: 150px;
+    padding: 4px 12px;
+    font-size: 12px;
+    border: 1px solid var(--color-j);
+    color: white;
+    background: var(--color-j);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: bold;
+}
+
+#podium-btn:hover {
+    filter: brightness(1.1);
+}
+
+#lock-btn {
+    position: absolute;
+    right: 70px;
+    padding: 4px 12px;
+    font-size: 12px;
+    border: 1px solid #3498db;
+    color: #3498db;
+    background: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: bold;
+}
+
+#lock-btn:hover {
+    background: #3498db;
+    color: white;
+}
+
+#lock-btn.locked {
+    background: #e67e22;
+    color: white;
+    border-color: #e67e22;
+}
+
+#clear-all-btn {
+    position: absolute;
+    right: 10px;
+    padding: 4px 12px;
+    font-size: 12px;
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+    background: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: bold;
+}
+
+#clear-all-btn:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+
+.sync-idle {
+    color: #27ae60;
+    background: #eafaf1;
+}
+
+.sync-saving {
+    color: #f39c12;
+    background: #fef5e7;
+    animation: pulse 1s infinite;
+}
+
+.sync-error {
+    color: #e74c3c;
+    background: #fdedec;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
+}
+
+/* 集計行の色分け用（ドット表示などの工夫も可能だが今回はシンプルに文字のみ） */
+
+/* スマホ向け調整 */
+@media (max-width: 768px) {
+    #status-message {
+        gap: 8px;
+        padding: 10px 180px 10px 10px;
+        justify-content: center;
+    }
+
+    #podium-btn {
+        padding: 4px 6px;
+        font-size: 11px;
+        right: 115px;
+        left: auto;
+        z-index: 100;
+    }
+
+    #lock-btn {
+        padding: 4px 6px;
+        font-size: 11px;
+        right: 60px;
+        left: auto;
+        z-index: 100;
+    }
+
+    #clear-all-btn {
+        padding: 4px 8px;
+        font-size: 11px;
+        right: 5px;
+        left: auto;
+        z-index: 100;
+        /* 確実に最前面へ */
+    }
+
+    .group-selector {
+        gap: 5px;
+    }
+
+    .group-btn {
+        padding: 8px 12px;
+        min-width: 80px;
+        font-size: 13px;
+    }
+
+    .count {
+        font-size: 12px;
+        padding: 1px 6px;
+    }
+
+    .total-bh {
+        margin-left: 10px;
+        padding-left: 10px;
+    }
+
+    .seat-grid {
+        /* ラベル1+22列+通路1+22列 = 46列 */
+        /* グリッド全体を縮小 */
+        grid-template-columns: 20px repeat(22, 12px) 12px repeat(22, 12px);
+        grid-template-rows: 35px repeat(9, 12px);
+        gap: 2px;
+        min-width: unset;
+        /* 横幅固定を解除 */
+    }
+
+    .seat {
+        width: 12px;
+        height: 12px;
+    }
+
+    .grid-label {
+        font-size: 8px;
+    }
+
+    .col-label {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        height: 35px;
+        justify-content: flex-start;
+        padding-bottom: 2px;
+    }
+
+    /* 22列目と23列目の間の通路位置調整 */
+    .seat-grid>div:nth-child(45n+24) {
+        grid-column-start: 25;
+    }
+}

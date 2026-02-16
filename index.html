@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>バック側座席管理</title>
+    <link rel="stylesheet" href="app/style.css">
+</head>
+
+<body>
+    <header>
+        <h1>バック側座席管理</h1>
+    </header>
+
+    <main>
+        <!-- グループ選択エリア -->
+        <section id="controls">
+            <div class="group-selector">
+                <div class="group-item">
+                    <button type="button" class="group-btn" data-group="I">KSWフォース</button>
+                    <span class="count" id="count-I">0</span>
+                </div>
+                <div class="group-item">
+                    <button type="button" class="group-btn" data-group="H">X</button>
+                    <span class="count" id="count-H">0</span>
+                </div>
+                <div class="group-item">
+                    <button type="button" class="group-btn" data-group="G">FORZA</button>
+                    <span class="count" id="count-G">0</span>
+                </div>
+                <div class="group-item">
+                    <button type="button" class="group-btn" data-group="F">太陽軒・TS1</button>
+                    <span class="count" id="count-F">0</span>
+                </div>
+                <div class="group-item">
+                    <button type="button" class="group-btn" data-group="E">ショコラ</button>
+                    <span class="count" id="count-E">0</span>
+                </div>
+                <div class="group-item">
+                    <button type="button" class="group-btn" data-group="D">コリドラス</button>
+                    <span class="count" id="count-D">0</span>
+                </div>
+                <div class="group-item">
+                    <button type="button" class="group-btn" data-group="C">ボアソルチ</button>
+                    <span class="count" id="count-C">0</span>
+                </div>
+                <div class="group-item">
+                    <button type="button" class="group-btn" data-group="B">Sun spire</button>
+                    <span class="count" id="count-B">0</span>
+                </div>
+                <div class="group-item">
+                    <button type="button" class="group-btn" data-group="A">中央</button>
+                    <span class="count" id="count-A">0</span>
+                </div>
+                <div class="group-item total-bh">
+                    <span class="total-label">中央以外合計</span>
+                    <span class="count" id="count-total-BH">0</span>
+                </div>
+            </div>
+
+            <div id="special-input-a" class="hidden">
+                <label for="col-count-a">「中央」用 塗りつぶし列数:</label>
+                <input type="number" id="col-count-a" min="0" max="44" placeholder="列数を入力">
+            </div>
+
+            <div id="status-message">
+                選択中のグループ: <span id="current-group-display">なし</span>
+                <span id="sync-status" class="sync-idle">同期完了</span>
+                <button type="button" id="podium-btn" data-group="J">お立ち台</button>
+                <button type="button" id="lock-btn">ロック</button>
+                <button type="button" id="clear-all-btn">クリア</button>
+            </div>
+        </section>
+
+        <!-- 座席グリッドエリア -->
+        <section id="seat-map-container">
+            <div id="seat-grid" class="seat-grid">
+                <!-- JSで座席を動的に生成 -->
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app/app.js"></script>
+</body>
+
+</html>
