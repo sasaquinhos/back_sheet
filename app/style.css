@@ -64,8 +64,13 @@ main {
     gap: 10px;
     justify-content: center;
     margin-bottom: 20px;
-    flex-direction: row-reverse;
-    /* 右から左へ */
+    direction: rtl;
+    /* 全体を右から左へ流す */
+}
+
+/* 子要素（テキスト等）が逆転するのを防ぐ */
+.group-item {
+    direction: ltr;
 }
 
 .group-item {
@@ -97,14 +102,12 @@ main {
 }
 
 .total-bh {
-    margin-right: 10px;
-    /* Aボタンとの間にマージン */
-    margin-left: 0;
+    order: -1;
+    /* RTL環境で先頭（右端）に配置 */
+    margin-left: 20px;
     border-left: 2px solid #ddd;
-    /* 左側に区切り線 */
-    border-right: none;
     padding-left: 20px;
-    padding-right: 0;
+    margin-right: 0;
 }
 
 .total-label {
@@ -471,9 +474,8 @@ main {
 
     .group-selector {
         gap: 5px;
-        flex-direction: row-reverse;
         justify-content: flex-start;
-        /* 右寄せ（RTLの起点） */
+        /* RTL環境での「開始位置」＝右端 */
     }
 
     .group-btn {
@@ -488,10 +490,9 @@ main {
     }
 
     .total-bh {
+        border-left: 2px solid #ddd;
         margin-left: 5px;
         padding-left: 10px;
-        border-left: 2px solid #ddd;
-        border-right: none;
         margin-right: 0;
     }
 
