@@ -91,17 +91,24 @@ document.addEventListener('DOMContentLoaded', () => {
         syncStatus.textContent = text;
     }
 
+    let isExpanded = false;
+
     // 1. 座席の生成
     function createSeats() {
+        // グリッドをクリア（再生成用）
+        seatGrid.innerHTML = '';
+        const currentTotalCols = isExpanded ? TOTAL_COLS + COLS_PER_BLOCK : TOTAL_COLS;
+        const startColNumber = 88 - currentTotalCols + 1;
+
         // 列番号のヘッダーを表示 (上端)
         const emptyCorner = document.createElement('div');
         emptyCorner.className = 'grid-label';
         seatGrid.appendChild(emptyCorner);
 
-        for (let c_index = 1; c_index <= TOTAL_COLS; c_index++) {
+        for (let c_index = 0; c_index < currentTotalCols; c_index++) {
             const colLabel = document.createElement('div');
             colLabel.className = 'grid-label col-label';
-            colLabel.textContent = 44 + c_index; // 45～88 に変更
+            colLabel.textContent = startColNumber + c_index;
             seatGrid.appendChild(colLabel);
         }
 
@@ -111,25 +118,61 @@ document.addEventListener('DOMContentLoaded', () => {
             rowLabel.textContent = (ROWS - r + 1);
             seatGrid.appendChild(rowLabel);
 
-            for (let c = 1; c <= COLS_PER_BLOCK; c++) {
-                const seatId = `block1-r${r}-c${c}`;
-                const seat = createSeatElement(seatId, r, c);
-                seatGrid.appendChild(seat);
-            }
-            for (let c = 1; c <= COLS_PER_BLOCK; c++) {
-                const seatId = `block2-r${r}-c${c}`;
-                const seat = createSeatElement(seatId, r, c + COLS_PER_BLOCK);
-                seatGrid.appendChild(seat);
-            }
+            // ブロックごとの生成
+            // 拡張時: block0 (23-44), block1 (45-66), block2 (67-88)
+            // 通常時: block1 (45-66), block2 (67-88)
+            const blocks = isExpanded ? [0, 1, 2] : [1, 2];
+            let absoluteCol = 1;
+            blocks.forEach(bId => {
+                for (let c = 1; c <= COLS_PER_BLOCK; c++) {
+                    const seatId = `block${bId}-r${r}-c${c}`;
+                    const seat = createSeatElement(seatId, r, absoluteCol);
+                    
+                    // 既存のデータを反映
+                    if (seatData[seatId]) {
+                        seat.classList.add(`group-${seatData[seatId]}`);
+                        seat.dataset.color = seatData[seatId];
+                    }
+
+                    seatGrid.appendChild(seat);
+                    absoluteCol++;
+                }
+            });
         }
-
-        window.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
-
-        // 初期化が終わったら読込
-        loadData();
     }
+
+    // 拡張ボタンのイベントリスナー
+    const expandBtn = document.getElementById('expand-btn');
+    if (expandBtn) {
+        expandBtn.addEventListener('click', () => {
+            isExpanded = !isExpanded;
+            
+            if (isExpanded) {
+                expandBtn.textContent = '縮小';
+                seatGrid.classList.add('expanded');
+            } else {
+                expandBtn.textContent = '拡張';
+                seatGrid.classList.remove('expanded');
+                requestSave();
+            }
+            
+            // 再描画
+            createSeats();
+            updateSummary();
+
+            // 拡張時のみ、スクロールを右端（既存エリア）に寄せる
+            if (isExpanded) {
+                const container = document.getElementById('seat-map-container');
+                if (container) {
+                    // DOMの更新を待ってからスクロールを適用
+                    setTimeout(() => {
+                        container.scrollLeft = container.scrollWidth;
+                    }, 0);
+                }
+            }
+        });
+    }
+
 
     function createSeatElement(id, row, col) {
         const div = document.createElement('div');
@@ -137,14 +180,15 @@ document.addEventListener('DOMContentLoaded', () => {
         div.id = id;
         div.title = id;
 
-        // data-row, data-col, data-group 属性を設定
+        // data-row, data-col 属性を設定
         div.dataset.row = row;
         div.dataset.col = col;
-        // グループAの範囲を定義（全座席をグループAとして扱う）
+        // グループAの範囲を定義（便宜上すべてAとして初期化するが、描画ロジックで制御）
         div.dataset.group = 'A';
 
         // --- マウス操作 ---
         div.addEventListener('mousedown', (e) => {
+            if (e.button !== 0) return; // 左クリックのみ
             e.preventDefault();
             isDragging = true;
             handleSeatClick(id, true); // 開始フラグ
@@ -158,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- タッチ操作 (スマホ) ---
         div.addEventListener('touchstart', (e) => {
-            // タッチ開始時にマウスイベントの擬似発火を防止
             e.preventDefault();
             isDragging = true;
             const touch = e.touches[0];
@@ -181,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 前回の座標から現在の座標までを補完して処理
     function processLine(x1, y1, x2, y2) {
         const dist = Math.hypot(x2 - x1, y2 - y1);
+        if (dist === 0) return;
         const steps = Math.ceil(dist / 10); // 10pxごとにサンプリング
 
         for (let i = 0; i <= steps; i++) {
@@ -279,8 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 「中央 (A)」は手動での個別描画・消去を一切禁止する
         if (currentGroup === 'A') return;
 
-        // 同一ドラッグ内（および瞬間の重複イベント）での同一マスの多重処理を徹底防止
-        // これにより、タッチとマウスの二重発火による意図しないトグル（反転）を防ぐ
+        // 同一ドラッグ内での同一マスの多重処理を徹底防止
         if (seatId === lastProcessedSeatId) return;
 
         const seatEl = document.getElementById(seatId);
@@ -352,24 +395,32 @@ document.addEventListener('DOMContentLoaded', () => {
         fillDefaultSeats();
 
         // 表示のリセットと再反映
-        const seats = document.querySelectorAll('.seat');
-        seats.forEach(seat => {
-            GROUPS.forEach(g => seat.classList.remove(`group-${g}`));
-            const id = seat.id;
-            if (seatData[id]) {
-                seat.classList.add(`group-${seatData[id]}`);
-                seat.dataset.color = seatData[id];
-            } else {
-                seat.dataset.color = '';
-            }
-        });
+        const currentTotalCols = isExpanded ? TOTAL_COLS + COLS_PER_BLOCK : TOTAL_COLS;
+        const blocks = isExpanded ? [0, 1, 2] : [1, 2];
+        
+        for (let r = 1; r <= ROWS; r++) {
+            blocks.forEach(bId => {
+                for (let c = 1; c <= COLS_PER_BLOCK; c++) {
+                    const id = `block${bId}-r${r}-c${c}`;
+                    const seat = document.getElementById(id);
+                    if (seat) {
+                        GROUPS.forEach(g => seat.classList.remove(`group-${g}`));
+                        if (seatData[id]) {
+                            seat.classList.add(`group-${seatData[id]}`);
+                            seat.dataset.color = seatData[id];
+                        } else {
+                            seat.dataset.color = '';
+                        }
+                    }
+                }
+            });
+        }
 
         updateSummary();
         requestSave();
     }
 
     if (clearAllBtn) {
-        // PC/スマホ両方で確実に反応させるため pointerdown を使用
         clearAllBtn.addEventListener('pointerdown', (e) => {
             e.preventDefault();
             clearAllSeats();
@@ -401,13 +452,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // デフォルト座席（ラベル2段め、3段めの55列、56列）をお立ち台色（J）で埋める
     function fillDefaultSeats() {
         // 55列: c=11, 56列: c=12 (Block1)
-        // ラベル2段め: r=8, 3段め: r=7 (ROWS=9, label = 9-r+1)
+        // ラベル2段め: r=8, 3段め: r=7
         const targets = [
             'block1-r7-c11', 'block1-r7-c12',
             'block1-r8-c11', 'block1-r8-c12'
         ];
         targets.forEach(id => {
-            // お立ち台グループ J にセット
             seatData[id] = 'J';
         });
     }
@@ -417,31 +467,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const colCount = parseInt(colCountInputA.value);
         if (isNaN(colCount) || colCount < 0) return;
 
-        // 全体の列は 1〜44
+        const currentTotalCols = isExpanded ? TOTAL_COLS + COLS_PER_BLOCK : TOTAL_COLS;
+        const blocks = isExpanded ? [0, 1, 2] : [1, 2];
+
         for (let r = 1; r <= ROWS; r++) {
-            for (let c_index = 1; c_index <= TOTAL_COLS; c_index++) {
-                const col = c_index;
-                // グループAは全体の右端（88番/col=44）から左方向に埋める
-                // col=44 が 1番目, col=43 が 2番目... col=1 が 44番目
-                let effectiveCol = TOTAL_COLS - (col - 1);
+            let absoluteCol = 1;
+            blocks.forEach(bId => {
+                for (let c = 1; c <= COLS_PER_BLOCK; c++) {
+                    const seatId = `block${bId}-r${r}-c${c}`;
+                    
+                    // 右端から数えた列番号
+                    let effectiveCol = currentTotalCols - (absoluteCol - 1);
 
-                let seatId;
-                if (c_index <= COLS_PER_BLOCK) {
-                    seatId = `block1-r${r}-c${c_index}`;
-                } else {
-                    seatId = `block2-r${r}-c${c_index - COLS_PER_BLOCK}`;
-                }
-
-                if (effectiveCol <= colCount) {
-                    updateSeat(seatId, 'A');
-                } else {
-                    if (seatData[seatId] === 'A') {
+                    if (effectiveCol <= colCount) {
+                        updateSeat(seatId, 'A');
+                    } else if (seatData[seatId] === 'A') {
                         updateSeat(seatId, null);
                     }
+                    absoluteCol++;
                 }
-            }
+            });
         }
     }
+
 
     // 入力確定時（エンターキーまたはフォーカスアウト）に実行
     colCountInputA.addEventListener('keydown', (e) => {
@@ -493,6 +541,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 初期化
-    createSeats();
-    updateSummary();
+    async function init() {
+        await loadData(); // データを読み込んでから
+        createSeats();    // 座席を生成（内部でseatDataを参照）
+        updateSummary();
+    }
+
+    init();
 });
