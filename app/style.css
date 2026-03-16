@@ -211,17 +211,24 @@ main {
 
 .seat-grid {
     display: grid;
-    /* 10行 (ラベル1 + 座席9) × 46列 (ラベル1 + 22列 + 通路1列 + 22列) */
+    /* デフォルト: 10行 (ラベル1 + 座席9) × 46列 (ラベル1 + 22列 + 通路1列 + 22列) */
     grid-template-columns: 30px repeat(22, 20px) 20px repeat(22, 20px);
     grid-template-rows: 25px repeat(9, 20px);
     gap: 4px;
     justify-content: center;
     min-width: 1150px;
-    touch-action: none;
     /* スマホでのドラッグ中のスクロールを防止 */
-    user-select: none;
+    touch-action: none;
     /* ドラッグ中のテキスト選択防止 */
+    user-select: none;
 }
+
+/* 拡張時: 10行 × 69列 (ラベル1 + 22列 + 通路1 + 22列 + 通路1 + 22列) */
+.seat-grid.expanded {
+    grid-template-columns: 30px repeat(22, 20px) 20px repeat(22, 20px) 20px repeat(22, 20px);
+    min-width: 1700px;
+}
+
 
 /* ラベルのスタイル */
 .grid-label {
@@ -245,9 +252,21 @@ main {
 /* 22列目と23列目の間の通路（Block 2 の開始要素を 25カラム目から開始させる） */
 /* 1行につき 45要素（ラベル含め）あるため、24番目の要素が Block 2 の開始 */
 /* ヘッダー行および各座席行の 24番目の要素に適用 */
-.seat-grid>div:nth-child(45n+24) {
+/* 22列目と23列目の間の通路 */
+.seat-grid:not(.expanded)>div:nth-child(45n+24) {
     grid-column-start: 25;
 }
+
+/* 拡張時: 通路位置の調整 (1列ラベル+66列 = 67要素/行) */
+.seat-grid.expanded>div:nth-child(67n+24) {
+    grid-column-start: 25;
+}
+
+.seat-grid.expanded>div:nth-child(67n+46) {
+    grid-column-start: 48;
+}
+
+
 
 .seat {
     width: 20px;
@@ -334,9 +353,11 @@ main {
     justify-content: center;
     gap: 15px;
     position: relative;
-    padding: 10px 240px 10px 10px;
-    /* ボタン分の余白を右側に確保 (お立ち台+ロック+クリア) */
+    padding: 10px 400px 10px 10px;
+    /* ボタン4つ分 (お立ち台、拡張、ロック、クリア) の余白 */
 }
+
+
 
 #sync-status {
     font-size: 11px;
@@ -348,7 +369,8 @@ main {
 
 #podium-btn {
     position: absolute;
-    right: 150px;
+    right: 230px;
+
     padding: 4px 12px;
     font-size: 12px;
     border: 1px solid var(--color-j);
@@ -364,9 +386,29 @@ main {
     filter: brightness(1.1);
 }
 
+#expand-btn {
+    position: absolute;
+    right: 150px;
+    padding: 4px 12px;
+    font-size: 12px;
+    border: 1px solid #9b59b6;
+    color: #9b59b6;
+    background: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: bold;
+}
+
+#expand-btn:hover {
+    background: #9b59b6;
+    color: white;
+}
+
 #lock-btn {
     position: absolute;
     right: 70px;
+
     padding: 4px 12px;
     font-size: 12px;
     border: 1px solid #3498db;
@@ -445,34 +487,57 @@ main {
 @media (max-width: 768px) {
     #status-message {
         gap: 8px;
-        padding: 10px 180px 10px 10px;
+        padding: 10px 10px 80px 10px; /* 下側に余白を作りボタンを配置 */
         justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        display: flex;
     }
 
     #podium-btn {
         padding: 4px 6px;
         font-size: 11px;
-        right: 115px;
+        right: 10px;
+        top: 40px;
         left: auto;
         z-index: 100;
+        position: absolute;
+    }
+
+    #expand-btn {
+        padding: 4px 6px;
+        font-size: 11px;
+        right: 85px;
+        top: 40px;
+        left: auto;
+        z-index: 100;
+        position: absolute;
+        border: 1px solid #9b59b6;
+        color: #9b59b6;
+        background: transparent;
+        border-radius: 4px;
     }
 
     #lock-btn {
         padding: 4px 6px;
         font-size: 11px;
-        right: 60px;
+        right: 160px;
+        top: 40px;
         left: auto;
         z-index: 100;
+        position: absolute;
     }
 
     #clear-all-btn {
         padding: 4px 8px;
         font-size: 11px;
-        right: 5px;
+        right: 10px;
+        top: 10px;
         left: auto;
         z-index: 100;
-        /* 確実に最前面へ */
+        position: absolute;
     }
+
 
     .group-selector {
         gap: 5px;
@@ -530,7 +595,21 @@ main {
     }
 
     /* 22列目と23列目の間の通路位置調整 */
-    .seat-grid>div:nth-child(45n+24) {
+    .seat-grid:not(.expanded)>div:nth-child(45n+24) {
         grid-column-start: 25;
     }
+
+    .seat-grid.expanded {
+        grid-template-columns: 20px repeat(22, 12px) 12px repeat(22, 12px) 12px repeat(22, 12px);
+    }
+
+    .seat-grid.expanded>div:nth-child(67n+24) {
+        grid-column-start: 25;
+    }
+
+    .seat-grid.expanded>div:nth-child(67n+46) {
+        grid-column-start: 48;
+    }
 }
+
+
