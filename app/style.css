@@ -352,12 +352,13 @@ main {
 #status-message {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end; /* center -> flex-end */
     gap: 15px;
     position: relative;
     padding: 10px 400px 10px 10px;
     /* ボタン4つ分 (お立ち台、拡張、ロック、クリア) の余白 */
 }
+
 
 
 
@@ -503,8 +504,9 @@ main {
     #status-message {
         gap: 5px;
         padding: 5px;
-        justify-content: flex-start;
+        justify-content: flex-end; /* flex-start -> flex-end */
         flex-direction: row;
+
         align-items: center;
         display: flex;
         overflow-x: auto;
