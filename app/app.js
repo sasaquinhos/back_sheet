@@ -178,11 +178,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     // モバイルブラウザのレンダリング完了タイミングがまちまちなため、段階的に実行
                     setTimeout(scrollToRight, 0);
                     setTimeout(scrollToRight, 100);
-                    setTimeout(scrollToRight, 300);
+                    setTimeout(scrollToRight, 500); // 300 -> 500 に延長
                 }
             }
         });
     }
+
 
 
 
