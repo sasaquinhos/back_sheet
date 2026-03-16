@@ -563,9 +563,10 @@ main {
         grid-template-columns: 20px repeat(22, 12px) 12px repeat(22, 12px);
         grid-template-rows: 35px repeat(9, 12px);
         gap: 2px;
-        min-width: unset;
+        min-width: 560px; /* 約 (20 + 44*12 + 12) + gap */
         /* 横幅固定を解除 */
     }
+
 
     .seat {
         width: 12px;
@@ -591,7 +592,9 @@ main {
 
     .seat-grid.expanded {
         grid-template-columns: 20px repeat(22, 12px) 12px repeat(22, 12px) 12px repeat(22, 12px);
+        min-width: 836px; /* 約 (20 + 66*12 + 24) + gap */
     }
+
 
     .seat-grid.expanded>div:nth-child(67n+24) {
         grid-column-start: 25;
