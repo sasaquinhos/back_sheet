@@ -164,14 +164,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isExpanded) {
                 const container = document.getElementById('seat-map-container');
                 if (container) {
-                    // DOMの更新を待ってからスクロールを適用
-                    setTimeout(() => {
+                    // スマホ等でレンダリングが遅延する場合があるため、タイミングを複数回試行して確実に右寄せする
+                    const scrollToRight = () => {
                         container.scrollLeft = container.scrollWidth;
-                    }, 0);
+                    };
+                    
+                    // 1回目: 即時(next tick)
+                    setTimeout(scrollToRight, 0);
+                    // 2回目: 100ms後（レイアウト確定待ち）
+                    setTimeout(scrollToRight, 100);
                 }
             }
         });
     }
+
 
 
     function createSeatElement(id, row, col) {
