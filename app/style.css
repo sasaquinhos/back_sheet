@@ -39,8 +39,9 @@ body {
 
 header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 15px; /* 30px -> 15px */
 }
+
 
 main {
     max-width: 1200px;
@@ -53,10 +54,11 @@ main {
 
 /* コントロールエリア */
 #controls {
-    margin-bottom: 30px;
-    padding-bottom: 20px;
+    margin-bottom: 15px; /* 30px -> 15px */
+    padding-bottom: 10px; /* 20px -> 10px */
     border-bottom: 2px solid var(--border-color);
 }
+
 
 .group-selector {
     display: flex;
@@ -485,58 +487,44 @@ main {
 
 /* スマホ向け調整 */
 @media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    header h1 {
+        font-size: 1.2rem;
+        margin: 5px 0;
+    }
+
+    main {
+        padding: 10px;
+    }
+
     #status-message {
-        gap: 8px;
-        padding: 10px 10px 80px 10px; /* 下側に余白を作りボタンを配置 */
-        justify-content: center;
-        flex-direction: column;
+        gap: 5px;
+        padding: 5px;
+        justify-content: flex-start;
+        flex-direction: row;
         align-items: center;
         display: flex;
-    }
-
-    #podium-btn {
-        padding: 4px 6px;
+        overflow-x: auto;
+        white-space: nowrap;
         font-size: 11px;
-        right: 10px;
-        top: 40px;
-        left: auto;
-        z-index: 100;
-        position: absolute;
+        margin-top: 5px;
     }
 
-    #expand-btn {
-        padding: 4px 6px;
-        font-size: 11px;
-        right: 85px;
-        top: 40px;
-        left: auto;
-        z-index: 100;
-        position: absolute;
-        border: 1px solid #9b59b6;
-        color: #9b59b6;
-        background: transparent;
-        border-radius: 4px;
-    }
-
-    #lock-btn {
-        padding: 4px 6px;
-        font-size: 11px;
-        right: 160px;
-        top: 40px;
-        left: auto;
-        z-index: 100;
-        position: absolute;
-    }
-
-    #clear-all-btn {
+    #podium-btn, #expand-btn, #lock-btn, #clear-all-btn {
+        position: static;
         padding: 4px 8px;
         font-size: 11px;
-        right: 10px;
-        top: 10px;
-        left: auto;
-        z-index: 100;
-        position: absolute;
+        flex-shrink: 0;
     }
+
+    #sync-status {
+        font-size: 9px;
+        flex-shrink: 0;
+    }
+
 
 
     .group-selector {
