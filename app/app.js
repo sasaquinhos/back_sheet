@@ -175,14 +175,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     };
                     
-                    // 1回目: 即時
+                    // モバイルブラウザのレンダリング完了タイミングがまちまちなため、段階的に実行
                     setTimeout(scrollToRight, 0);
-                    // 2回目: 150ms後（モバイルのレンダリング完了を待機）
-                    setTimeout(scrollToRight, 150);
+                    setTimeout(scrollToRight, 100);
+                    setTimeout(scrollToRight, 300);
                 }
             }
         });
     }
+
 
 
 
