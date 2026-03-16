@@ -164,19 +164,26 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isExpanded) {
                 const container = document.getElementById('seat-map-container');
                 if (container) {
-                    // スマホ等でレンダリングが遅延する場合があるため、タイミングを複数回試行して確実に右寄せする
                     const scrollToRight = () => {
+                        // 方法1: scrollLeft を最大値に設定
                         container.scrollLeft = container.scrollWidth;
+                        
+                        // 方法2: 最後の座席要素をターゲットにスクロール（より確実）
+                        const lastSeat = seatGrid.lastElementChild;
+                        if (lastSeat) {
+                            lastSeat.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'end' });
+                        }
                     };
                     
-                    // 1回目: 即時(next tick)
+                    // 1回目: 即時
                     setTimeout(scrollToRight, 0);
-                    // 2回目: 100ms後（レイアウト確定待ち）
-                    setTimeout(scrollToRight, 100);
+                    // 2回目: 150ms後（モバイルのレンダリング完了を待機）
+                    setTimeout(scrollToRight, 150);
                 }
             }
         });
     }
+
 
 
 
