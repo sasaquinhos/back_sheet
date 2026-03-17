@@ -567,7 +567,7 @@ main {
         /* ラベル1+22列+通路1+22列 = 46列 */
         /* グリッド全体を縮小 */
         grid-template-columns: 20px repeat(22, 12px) 12px repeat(22, 12px);
-        grid-template-rows: 40px repeat(9, 12px); /* 60px -> 40px: 横書きに合わせて調整 */
+        grid-template-rows: 20px repeat(9, 12px); /* 40px -> 20px: 余白を削除 */
         gap: 2px;
         justify-content: start; /* center -> start */
         min-width: 560px; /* 約 (20 + 44*12 + 12) + gap */
@@ -586,14 +586,13 @@ main {
     }
 
     .col-label {
-        /* 以前の垂直表示(writing-mode, transform)を削除 */
-        height: 40px; /* 横書きに適した高さに変更 */
+        height: 20px; /* 40px -> 20px: 余白を削減 */
         display: flex;
-        align-items: flex-end; /* 数字をグリッドの上に配置 */
+        align-items: flex-end;
         justify-content: center;
-        padding-bottom: 5px; /* 適度な余白 */
-        background: rgba(0,0,0,0.05); /* タッチ領域を視覚化 */
-        border-radius: 4px;
+        padding-bottom: 2px; /* 5px -> 2px: さらに隙間を詰める */
+        background: transparent; /* 背景（グレー）を削除 */
+        border-radius: 0;
         box-sizing: border-box;
     }
 
