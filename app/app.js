@@ -154,6 +154,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 expandBtn.textContent = '拡張';
                 seatGrid.classList.remove('expanded');
                 requestSave();
+
+                // 縮小時、スクロールを左端（初期位置）に戻す
+                const container = document.getElementById('seat-map-container');
+                if (container) {
+                    container.scrollTo({
+                        left: 0,
+                        behavior: 'smooth'
+                    });
+                }
             }
             
             // 再描画
@@ -165,20 +174,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const container = document.getElementById('seat-map-container');
                 if (container) {
                     const scrollToRight = () => {
-                        // 方法1: scrollLeft を最大値に設定
-                        container.scrollLeft = container.scrollWidth;
-                        
-                        // 方法2: 最後の座席要素をターゲットにスクロール（より確実）
-                        const lastSeat = seatGrid.lastElementChild;
-                        if (lastSeat) {
-                            lastSeat.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'end' });
-                        }
+                        // 描画サイクルに合わせて2フレーム待機（より確実にレイアウト確定を待つ）
+                        requestAnimationFrame(() => {
+                            requestAnimationFrame(() => {
+                                container.scrollTo({
+                                    left: container.scrollWidth,
+                                    behavior: 'smooth'
+                                });
+                            });
+                        });
                     };
-                    
-                    // モバイルブラウザのレンダリング完了タイミングがまちまちなため、段階的に実行
-                    setTimeout(scrollToRight, 0);
-                    setTimeout(scrollToRight, 100);
-                    setTimeout(scrollToRight, 500); // 300 -> 500 に延長
+                    scrollToRight();
                 }
             }
         });
