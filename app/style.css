@@ -232,6 +232,11 @@ main {
     min-width: 1700px;
 }
 
+/* ロック中は手動スクロールを許可 */
+.seat-grid.is-locked {
+    touch-action: auto;
+}
+
 
 /* ラベルのスタイル */
 .grid-label {
@@ -241,6 +246,8 @@ main {
     font-size: 11px;
     color: #777;
     font-weight: bold;
+    /* ラベル部分は常に手動スクロール（パン）を許可 */
+    touch-action: pan-x pan-y;
 }
 
 .col-label {
@@ -583,9 +590,11 @@ main {
     .col-label {
         writing-mode: vertical-rl;
         transform: rotate(180deg);
-        height: 35px;
+        height: 60px; /* 35px -> 60px: タッチ領域を拡大 */
         justify-content: flex-start;
-        padding-bottom: 2px;
+        padding-bottom: 5px;
+        background: rgba(0,0,0,0.03); /* タッチ領域を視覚化 */
+        border-radius: 4px;
     }
 
     /* 22列目と23列目の間の通路位置調整 */
