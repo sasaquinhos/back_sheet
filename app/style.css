@@ -495,7 +495,7 @@ main {
 /* 集計行の色分け用（ドット表示などの工夫も可能だが今回はシンプルに文字のみ） */
 
 /* スマホ向け調整 */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     body {
         padding: 10px;
     }
@@ -535,8 +535,6 @@ main {
         flex-shrink: 0;
     }
 
-
-
     .group-selector {
         gap: 5px;
         justify-content: center;
@@ -569,7 +567,7 @@ main {
         /* ラベル1+22列+通路1+22列 = 46列 */
         /* グリッド全体を縮小 */
         grid-template-columns: 20px repeat(22, 12px) 12px repeat(22, 12px);
-        grid-template-rows: 60px repeat(9, 12px);
+        grid-template-rows: 40px repeat(9, 12px); /* 60px -> 40px: 横書きに合わせて調整 */
         gap: 2px;
         justify-content: start; /* center -> start */
         min-width: 560px; /* 約 (20 + 44*12 + 12) + gap */
@@ -577,25 +575,26 @@ main {
         /* 横幅固定を解除 */
     }
 
-
     .seat {
         width: 12px;
         height: 12px;
     }
 
     .grid-label {
-        font-size: 8px;
+        font-size: 8px; /* スマホでも見やすいよう極小サイズに設定 */
+        letter-spacing: -0.5px;
     }
 
     .col-label {
-        writing-mode: vertical-rl;
-        transform: rotate(180deg);
-        height: 60px; /* タッチ領域を60pxに拡大 */
-        justify-content: flex-start;
-        padding-bottom: 25px; /* 下側に余白を作り、数字を上に押し上げる */
+        /* 以前の垂直表示(writing-mode, transform)を削除 */
+        height: 40px; /* 横書きに適した高さに変更 */
+        display: flex;
+        align-items: flex-end; /* 数字をグリッドの上に配置 */
+        justify-content: center;
+        padding-bottom: 5px; /* 適度な余白 */
         background: rgba(0,0,0,0.05); /* タッチ領域を視覚化 */
         border-radius: 4px;
-        box-sizing: border-box; /* paddingをheightに含める */
+        box-sizing: border-box;
     }
 
     /* 22列目と23列目の間の通路位置調整 */
@@ -607,7 +606,6 @@ main {
         grid-template-columns: 20px repeat(22, 12px) 12px repeat(22, 12px) 12px repeat(22, 12px);
         min-width: 836px; /* 約 (20 + 66*12 + 24) + gap */
     }
-
 
     .seat-grid.expanded>div:nth-child(67n+24) {
         grid-column-start: 25;
