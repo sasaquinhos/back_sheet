@@ -569,7 +569,7 @@ main {
         /* ラベル1+22列+通路1+22列 = 46列 */
         /* グリッド全体を縮小 */
         grid-template-columns: 20px repeat(22, 12px) 12px repeat(22, 12px);
-        grid-template-rows: 35px repeat(9, 12px);
+        grid-template-rows: 60px repeat(9, 12px);
         gap: 2px;
         justify-content: start; /* center -> start */
         min-width: 560px; /* 約 (20 + 44*12 + 12) + gap */
@@ -590,11 +590,12 @@ main {
     .col-label {
         writing-mode: vertical-rl;
         transform: rotate(180deg);
-        height: 60px; /* 35px -> 60px: タッチ領域を拡大 */
+        height: 60px; /* タッチ領域を60pxに拡大 */
         justify-content: flex-start;
-        padding-bottom: 5px;
-        background: rgba(0,0,0,0.03); /* タッチ領域を視覚化 */
+        padding-bottom: 25px; /* 下側に余白を作り、数字を上に押し上げる */
+        background: rgba(0,0,0,0.05); /* タッチ領域を視覚化 */
         border-radius: 4px;
+        box-sizing: border-box; /* paddingをheightに含める */
     }
 
     /* 22列目と23列目の間の通路位置調整 */
