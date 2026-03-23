@@ -388,8 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ロックボタンの処理
     if (lockBtn) {
-        lockBtn.addEventListener('pointerdown', (e) => {
-            e.preventDefault();
+        lockBtn.addEventListener('click', () => {
 
             // ロック状態に入る
             currentGroup = null;
@@ -445,8 +444,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (clearAllBtn) {
-        clearAllBtn.addEventListener('pointerdown', (e) => {
-            e.preventDefault();
+        clearAllBtn.addEventListener('click', () => {
             clearAllSeats();
         });
     }
