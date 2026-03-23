@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const lockBtn = document.getElementById('lock-btn');
     const clearAllBtn = document.getElementById('clear-all-btn');
     const podiumBtn = document.getElementById('podium-btn');
+    const seatMapContainer = document.getElementById('seat-map-container');
+    const scrollSlider = document.getElementById('scroll-slider');
 
     // --- Web化対応: API設定 (GAS デプロイ後に URL を差し替えてください) ---
     const API_URL = "https://script.google.com/macros/s/AKfycbz-689FjbDdQ78DXsBFtfqW-e7nevlu4dkLMgSa6qBQN-FaVRnIrTZnf74aiv4oSSW3/exec";
@@ -139,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+        updateSliderRange();
     }
 
     // 拡張ボタンのイベントリスナー
@@ -578,6 +581,45 @@ document.addEventListener('DOMContentLoaded', () => {
             totalBHEl.textContent = totalBH;
         }
     }
+
+    // --- スライダーバー関連 ---
+    function updateSliderRange() {
+        if (!scrollSlider || !seatMapContainer) return;
+
+        // コンテナのスクロール可能な最大値を設定
+        const maxScroll = seatMapContainer.scrollWidth - seatMapContainer.clientWidth;
+        scrollSlider.max = maxScroll > 0 ? maxScroll : 0;
+        scrollSlider.value = seatMapContainer.scrollLeft;
+        
+        // スクロール不要な場合は非表示にする（オプション）
+        // if (maxScroll <= 0) {
+        //     scrollSlider.parentElement.style.display = 'none';
+        // } else {
+        //     scrollSlider.parentElement.style.display = 'block';
+        // }
+    }
+
+    if (scrollSlider) {
+        // スライダー操作時にスクロールを同期
+        scrollSlider.addEventListener('input', () => {
+            if (seatMapContainer) {
+                seatMapContainer.scrollLeft = scrollSlider.value;
+            }
+        });
+    }
+
+    if (seatMapContainer) {
+        // コンテナを直接スクロール（スワイプ等）した時にスライダーを同期
+        seatMapContainer.addEventListener('scroll', () => {
+            if (scrollSlider) {
+                scrollSlider.value = seatMapContainer.scrollLeft;
+            }
+        });
+
+        // ウィンドウのリサイズ時にも範囲を更新
+        window.addEventListener('resize', updateSliderRange);
+    }
+
 
     // 初期化
     async function init() {
