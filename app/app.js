@@ -477,7 +477,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // ラベル2段め: r=8, 3段め: r=7
         const targets = [
             'block1-r7-c11', 'block1-r7-c12',
-            'block1-r8-c11', 'block1-r8-c12'
+            'block1-r8-c11', 'block1-r8-c12',
+            'block0-r7-c9', 'block0-r7-c10',
+            'block0-r8-c9', 'block0-r8-c10'
         ];
         targets.forEach(id => {
             seatData[id] = 'J';
@@ -530,11 +532,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const counts = {};
         GROUPS.forEach(g => counts[g] = 0);
 
-        Object.values(seatData).forEach(group => {
-            if (counts[group] !== undefined) {
-                counts[group]++;
-            }
-        });
+        // 現在表示されているブロックのみを集計対象にする
+        const activeBlocks = isExpanded ? [0, 1, 2] : [1, 2];
+
+        // Object.entries の代わりに互換性の高い Object.keys を使用
+        if (seatData) {
+            Object.keys(seatData).forEach(seatId => {
+                const group = seatData[seatId];
+                // seatId が "block0-..." などの形式であることを確認
+                if (typeof seatId === 'string' && seatId.indexOf('block') === 0) {
+                    const blockNumStr = seatId.split('-')[0].replace('block', '');
+                    const blockId = parseInt(blockNumStr);
+                    
+                    if (!isNaN(blockId) && activeBlocks.indexOf(blockId) !== -1) {
+                        if (counts[group] !== undefined) {
+                            counts[group]++;
+                        }
+                    }
+                }
+            });
+        }
 
         // 各ボタンのカウントを更新
         let totalBH = 0;
