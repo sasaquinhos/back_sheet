@@ -10,7 +10,13 @@
 
 <body>
     <header>
-        <h1>バック側座席管理</h1>
+        <div class="header-container">
+            <h1>バック側座席管理</h1>
+            <div class="header-right-actions">
+                <button type="button" id="clear-all-btn">クリア</button>
+                <button type="button" id="podium-btn" data-group="J">お立ち台</button>
+            </div>
+        </div>
     </header>
 
     <main>
@@ -65,12 +71,14 @@
             </div>
 
             <div id="status-message">
-                選択中のグループ: <span id="current-group-display">なし</span>
-                <span id="sync-status" class="sync-idle">同期完了</span>
-                <button type="button" id="podium-btn" data-group="J">お立ち台</button>
-                <button type="button" id="expand-btn">拡張</button>
-                <button type="button" id="lock-btn">ロック</button>
-                <button type="button" id="clear-all-btn">クリア</button>
+                <div class="status-content">
+                    選択中のグループ: <span id="current-group-display">なし</span>
+                    <span id="sync-status" class="sync-idle">同期完了</span>
+                </div>
+                <div class="status-actions">
+                    <button type="button" id="expand-btn">拡張</button>
+                    <button type="button" id="lock-btn">ロック</button>
+                </div>
             </div>
         </section>
 
