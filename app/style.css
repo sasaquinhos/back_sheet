@@ -38,8 +38,34 @@ body {
 }
 
 header {
-    text-align: center;
-    margin-bottom: 15px; /* 30px -> 15px */
+    margin-bottom: 15px;
+    padding: 0 10px;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-container h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.header-right-actions {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
 
 
@@ -111,6 +137,28 @@ main {
 @media (min-width: 769px) {
     .total-bh {
         order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        justify-content: flex-start;
+        gap: 15px;
+    }
+    .header-container h1 {
+        font-size: 1.1rem;
+        flex: 1;
+        text-align: left;
+    }
+    #podium-btn, #clear-all-btn, #expand-btn, #lock-btn {
+        padding: 4px 10px;
+        min-width: auto;
+        font-size: 11px;
+    }
+    .header-right-actions {
+        position: static;
+        transform: none;
+        gap: 5px;
     }
 }
 
@@ -356,34 +404,40 @@ main {
     background-color: #f2f2f2;
 }
 
-/* 同期状態の表示 */
+#podium-btn, #clear-all-btn, #expand-btn, #lock-btn {
+    text-align: center;
+    box-sizing: border-box;
+    font-size: 12px;
+    padding: 4px 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: auto;
+}
+
 #status-message {
     display: flex;
     align-items: center;
-    justify-content: flex-end; /* center -> flex-end */
-    gap: 15px;
+    justify-content: center;
     position: relative;
-    padding: 10px 400px 10px 10px;
-    /* ボタン4つ分 (お立ち台、拡張、ロック、クリア) の余白 */
+    padding: 10px;
+    margin-top: 15px;
+    min-height: 44px;
 }
 
+.status-content {
+    font-weight: bold;
+    padding: 0 160px; /* ボタン2つ分と余白を十分に確保 */
+    text-align: center;
+}
 
-
-
-#sync-status {
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    transition: all 0.3s;
-    display: inline-block;
+.status-actions {
+    position: absolute;
+    right: 10px;
+    display: flex;
+    gap: 10px;
 }
 
 #podium-btn {
-    position: absolute;
-    right: 230px;
-
-    padding: 4px 12px;
-    font-size: 12px;
     border: 1px solid var(--color-j);
     color: white;
     background: var(--color-j);
@@ -398,10 +452,6 @@ main {
 }
 
 #expand-btn {
-    position: absolute;
-    right: 150px;
-    padding: 4px 12px;
-    font-size: 12px;
     border: 1px solid #9b59b6;
     color: #9b59b6;
     background: transparent;
@@ -417,11 +467,6 @@ main {
 }
 
 #lock-btn {
-    position: absolute;
-    right: 70px;
-
-    padding: 4px 12px;
-    font-size: 12px;
     border: 1px solid #3498db;
     color: #3498db;
     background: transparent;
@@ -443,10 +488,6 @@ main {
 }
 
 #clear-all-btn {
-    position: absolute;
-    right: 10px;
-    padding: 4px 12px;
-    font-size: 12px;
     border: 1px solid #e74c3c;
     color: #e74c3c;
     background: transparent;
@@ -510,24 +551,26 @@ main {
     }
 
     #status-message {
-        gap: 5px;
-        padding: 5px;
-        justify-content: flex-end; /* flex-start -> flex-end */
-        flex-direction: row;
-
-        align-items: center;
         display: flex;
-        overflow-x: auto;
-        white-space: nowrap;
-        font-size: 11px;
-        margin-top: 5px;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+        align-items: center;
+        width: 100%;
+        box-sizing: border-box;
     }
 
-    #podium-btn, #expand-btn, #lock-btn, #clear-all-btn {
+    .status-content, .status-actions {
         position: static;
-        padding: 4px 8px;
-        font-size: 11px;
-        flex-shrink: 0;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .status-actions {
+        gap: 15px;
     }
 
     #sync-status {
